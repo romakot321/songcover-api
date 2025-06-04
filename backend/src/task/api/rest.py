@@ -1,6 +1,6 @@
 from io import BytesIO
 from uuid import UUID
-from fastapi import APIRouter, BackgroundTasks, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile
 
 from src.task.api.dependencies import TaskRunnerDepend, TaskUoWDepend
 from src.task.application.use_cases.create_task import CreateTaskUseCase
@@ -14,11 +14,11 @@ router = APIRouter()
 
 @router.post("", response_model=TaskReadDTO)
 async def create_and_run_task(
-    data: TaskCreateDTO,
-    music: UploadFile | None,
     uow: TaskUoWDepend,
     runner: TaskRunnerDepend,
     background_tasks: BackgroundTasks,
+    data: TaskCreateDTO = Depends(TaskCreateDTO.as_form),
+    music: UploadFile | None = File(None),
 ):
     task = await CreateTaskUseCase(uow).execute(data)
     if music is not None:
