@@ -1,5 +1,5 @@
-from backend.src.integration.domain.dtos import TopMediaiSingerDTO
-from backend.src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
+from src.integration.domain.dtos import TopMediaiSingerDTO
+from src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
 
 
 class GetVoicesListUseCase:

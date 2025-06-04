@@ -1,8 +1,8 @@
 from typing import Annotated
 
 from fastapi import Depends
-from backend.src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
-from backend.src.integration.infrastructure.external_api.topmediai.runner import TopMediaiTaskRunner
+from src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
+from src.integration.infrastructure.external_api.topmediai.runner import TopMediaiTaskRunner
 from src.integration.infrastructure.external_api.playht.adapter import PlayHTAdapter
 from src.integration.infrastructure.external_api.playht.runner import PlayHTTaskRunner
 from src.integration.infrastructure.http.client import HTTPClient

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, File, UploadFile
 
-from backend.src.integration.application.use_cases.get_voices_list import GetVoicesListUseCase
-from backend.src.integration.domain.dtos import TopMediaiSingerDTO
+from src.integration.application.use_cases.get_voices_list import GetVoicesListUseCase
+from src.integration.domain.dtos import TopMediaiSingerDTO
 from src.integration.api.dependencies import PlayHTAdapterDepend, TopMediaiAdapterDepend
 from src.integration.application.use_cases.create_voice_clone import (
     CreateVoiceCloneUseCase,

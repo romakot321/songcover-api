@@ -1,13 +1,13 @@
 from uuid import UUID
 
 from src.core.config import settings
-from backend.src.integration.application.interfaces.result_storage import IResultStorage
-from backend.src.integration.infrastructure.external_api.topmediai.schemas import (
+from src.integration.application.interfaces.result_storage import IResultStorage
+from src.integration.infrastructure.external_api.topmediai.schemas import (
     TopMediaiCoverRequest,
     TopMediaiCoverResponse,
 )
 from src.integration.infrastructure.http.api_client import HTTPApiClient
-from backend.src.integration.domain.dtos import TopMediaiSingerDTO
+from src.integration.domain.dtos import TopMediaiSingerDTO
 
 
 class TopMediaiAdapter:
