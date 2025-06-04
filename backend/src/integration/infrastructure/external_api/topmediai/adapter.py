@@ -1,0 +1,45 @@
+from uuid import UUID
+
+from src.core.config import settings
+from backend.src.integration.application.interfaces.result_storage import IResultStorage
+from backend.src.integration.infrastructure.external_api.topmediai.schemas import (
+    TopMediaiCoverRequest,
+    TopMediaiCoverResponse,
+)
+from src.integration.infrastructure.http.api_client import HTTPApiClient
+from backend.src.integration.domain.dtos import TopMediaiSingerDTO
+
+
+class TopMediaiAdapter:
+    API_URL: str = "https://api.topmediai.com"
+    API_TOKEN: str = settings.TOPMEDIAI_API_TOKEN
+
+    def __init__(self, result_storage: IResultStorage):
+        self.api_client = HTTPApiClient(self.API_URL, {"X-Api-Key": self.API_TOKEN})
+        self.result_storage = result_storage
+
+    async def get_singer_list(self) -> list[TopMediaiSingerDTO]:
+        response = await self.api_client.request("GET", "/v1/singers")
+        return [
+            TopMediaiSingerDTO.model_validate(singer)
+            for singer in response.get("Singers", [])
+        ]
+
+    async def ai_cover(
+        self, task_id: UUID, request: TopMediaiCoverRequest
+    ) -> TopMediaiCoverResponse:
+        if request.youtube_url is None and request.file is None:
+            raise TypeError(
+                "Empty youtube_url and file provided, no resource for generate"
+            )
+        response_raw = await self.api_client.request_form_data(
+            "/v1/cover",
+            fields=request.model_dump(exclude_none=True, exclude={"file"}),
+            files={"file": request.file} if request.file else None,
+        )
+        response = TopMediaiCoverResponse.model_validate(response_raw)
+        self.result_storage.store("topmediai", str(task_id), response)
+        return response
+
+    def get_ai_cover_result(self, task_id: UUID) -> TopMediaiCoverResponse | None:
+        return self.result_storage.get("topmediai", str(task_id))
