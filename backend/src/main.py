@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from src.integration.api.rest import router as integration_router
 from src.task.api.rest import router as task_router
+import src.core.logging_setup
 
 app = FastAPI(title="Song Cover API")
 
