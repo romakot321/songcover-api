@@ -11,8 +11,6 @@ services:
     networks:
       global_network:
       default:
-    ports:
-      - "8081:80"
     volumes:
       - app_localstorage:/app/storage
       - app_logs:/app/logs
@@ -33,8 +31,6 @@ services:
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     networks:
       default:
-    ports:
-      - "5432:5432"
 
 networks:
   default:
