@@ -6,6 +6,7 @@ from uuid import UUID
 
 class TaskSource(str, Enum):
     playht = "playht"
+    topmediai = "topmediai"
 
 
 class TaskStatus(str, Enum):
