@@ -39,3 +39,12 @@ class TopMediaiResponseDTO(BaseModel):
     status: int
     message: str | None = None
     combine_file: str | None = None
+
+
+class TopMediaiRequestDTO(BaseModel):
+    voice_id: int
+    youtube_url: str | None = None
+
+
+IntegrationTaskRunParamsDTO = TopMediaiRequestDTO
+

@@ -1,7 +1,9 @@
 from uuid import UUID
 from loguru import logger
 
+from pydantic import ValidationError
 from src.core.config import settings
+from src.integration.domain.exceptions import IntegrationRunException
 from src.integration.application.interfaces.result_storage import IResultStorage
 from src.integration.infrastructure.external_api.topmediai.schemas import (
     TopMediaiCoverRequest,
@@ -35,16 +37,22 @@ class TopMediaiAdapter:
             )
         if request.file is not None:
             request.file.name = "audio.mp3"
+
         logger.info(f"Starting task {task_id}")
         response_raw = await self.api_client.request_form_data(
             "/v1/cover",
             fields=request.model_dump(exclude={"file", "tran"}),
             files={"file": request.file} if request.file else None,
         )
-        logger.debug(f"Response for task {task_id}: {response_raw}")
-        response = TopMediaiCoverResponse.model_validate(response_raw)
+
+        try:
+            response = TopMediaiCoverResponse.model_validate(response_raw)
+        except ValidationError as e:
+            raise IntegrationRunException(str(e))
+
         self.result_storage.store("topmediai", str(task_id), response)
-        logger.info(f"Task {task_id} finished: {response}")
+        logger.info(f"Finished task {task_id}. {response=}")
+
         return response
 
     def get_ai_cover_result(self, task_id: UUID) -> TopMediaiCoverResponse | None:

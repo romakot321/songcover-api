@@ -1,30 +1,44 @@
+from functools import wraps
+import inspect
+from typing import Any, Callable, Type
 from uuid import UUID
 from fastapi import Form
 from pydantic import BaseModel
 
+from src.integration.domain.dtos import IntegrationTaskRunParamsDTO
 from src.task.domain.entities import TaskStatus
 
 
-class TaskCreateDTO(BaseModel):
+def as_form(cls: Type[BaseModel]):
+    new_parameters = []
+
+    for field_name, model_field in cls.model_fields.items():
+        new_parameters.append(
+            inspect.Parameter(
+                field_name,
+                inspect.Parameter.POSITIONAL_ONLY,
+                default=Form(...) if model_field.is_required() else Form(model_field.default),
+                annotation=model_field.annotation,
+            )
+        )
+
+    async def as_form_func(**data):
+        return cls(**data)
+
+    sig = inspect.signature(as_form_func)
+    sig = sig.replace(parameters=new_parameters)
+    as_form_func.__signature__ = sig  # type: ignore
+    setattr(cls, "as_form", as_form_func)
+    return cls
+
+
+@as_form
+class TaskCreateDTO(IntegrationTaskRunParamsDTO, BaseModel):
     user_id: str
     app_bundle: str
-    voice_id: int
-    youtube_url: str | None = None
 
     @classmethod
-    def as_form(
-        cls,
-        user_id: str = Form(),
-        app_bundle: str = Form(),
-        voice_id: int = Form(),
-        youtube_url: str | None = Form(None),
-    ):
-        return cls(
-            user_id=user_id,
-            app_bundle=app_bundle,
-            voice_id=voice_id,
-            youtube_url=youtube_url,
-        )
+    def as_form(cls): ...
 
 
 class TaskReadDTO(BaseModel):

@@ -16,10 +16,9 @@ class HTTPClient(IHTTPClient):
         **kwargs,
     ) -> dict:
         async with aiohttp.ClientSession() as session:
-            response = await session.post(url, json=json, headers=headers, data=data, read_until_eof=True)
+            response = await session.post(url, json=json, headers=headers, data=data)
             if not response.ok:
-                logger.debug(response)
-                raise IntegrationRequestException(await response.content.read())
+                raise IntegrationRequestException(await response.text())
             body = await response.json()
 
         return body
