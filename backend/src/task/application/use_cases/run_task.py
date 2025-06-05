@@ -11,7 +11,7 @@ from src.task.domain.mappers import IntegrationResponseToDomainMapper
 
 
 class RunTaskUseCase:
-    TIMEOUT_SECONDS = 60
+    TIMEOUT_SECONDS = 5 * 60
 
     def __init__(self, uow: ITaskUnitOfWork, runner: ITaskRunner) -> None:
         self.uow = uow
@@ -28,6 +28,7 @@ class RunTaskUseCase:
         logger.info(f"Task {task_id} result: {result}")
         if result is None:
             await self._set_task_status(task_id, status=TaskStatus.failed, error="Timeout")
+            raise TimeoutError()
         result_domain = IntegrationResponseToDomainMapper().map_one(result)
         await self._store_result(task_id, result_domain)
 

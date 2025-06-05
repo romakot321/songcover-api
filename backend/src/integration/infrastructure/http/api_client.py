@@ -57,7 +57,6 @@ class HTTPApiClient(IHTTPApiClient):
         boundary = "------geckoformboundarya959ea91fc1c4a8615ee517e14d6ffc5"
         headers["Content-Type"] = f"multipart/form-data; boundary={boundary}"
         data = self.encode_multipart_formdata(boundary, fields, files)
-        logger.debug(data[:1024])
 
         response = await self.http_client.post(
             url, params=params, headers=headers, data=data
