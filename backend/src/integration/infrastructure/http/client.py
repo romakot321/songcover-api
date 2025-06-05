@@ -1,4 +1,5 @@
 import aiohttp
+from loguru import logger
 
 from src.integration.application.interfaces.http_client import IHTTPClient
 from src.integration.domain.exceptions import IntegrationRequestException
@@ -15,9 +16,10 @@ class HTTPClient(IHTTPClient):
         **kwargs,
     ) -> dict:
         async with aiohttp.ClientSession() as session:
-            response = await session.post(url, json=json, headers=headers, data=data)
+            response = await session.post(url, json=json, headers=headers, data=data, read_until_eof=True)
             if not response.ok:
-                raise IntegrationRequestException(await response.text())
+                logger.debug(response)
+                raise IntegrationRequestException(await response.content.read())
             body = await response.json()
 
         return body

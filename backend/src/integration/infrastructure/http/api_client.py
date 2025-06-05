@@ -1,4 +1,5 @@
 from io import BytesIO
+from loguru import logger
 from typing import Literal
 from src.integration.application.interfaces.http_api_client import (
     IHTTPApiClient,
@@ -53,9 +54,10 @@ class HTTPApiClient(IHTTPApiClient):
             headers |= self.auth_header
         url = self.api_url + "/" + endpoint.lstrip("/")
 
-        boundary = "-----------------------------9051914041544843365972754266"
+        boundary = "------geckoformboundarya959ea91fc1c4a8615ee517e14d6ffc5"
         headers["Content-Type"] = f"multipart/form-data; boundary={boundary}"
-        data = self.prepare_form_data(boundary, fields, files)
+        data = self.encode_multipart_formdata(boundary, fields, files)
+        logger.debug(data[:1024])
 
         response = await self.http_client.post(
             url, params=params, headers=headers, data=data
@@ -64,29 +66,23 @@ class HTTPApiClient(IHTTPApiClient):
         return response
 
     @staticmethod
-    def prepare_form_data(
-        boundary: str,
-        fields: dict | None = None,
-        files: dict[str, BytesIO] | None = None,
-    ) -> str:
-        data = ""
-
-        for key, value in (fields or {}).items():
-            data += (
-                f"{boundary}\r\n"
-                f'Content-Disposition: form-data; name="{key}"\r\n'
-                "\r\n"
-                f"{value}\r\n"
-            )
-        for key, file in (files or {}).items():
-            file_body = file.getvalue().decode("latin-1")
-            data += (
-                f"{boundary}\r\n"
-                f'Content-Disposition: form-data; name="{key}"; filename="{file.name or "file.mp3"}"\r\n'
-                "\r\n"
-                f"{file_body}\r\n"
-            )
-
-        data += f"{boundary}--\r\n"
-
-        return data
+    def encode_multipart_formdata(BOUNDARY, fields, files):
+        CRLF = '\r\n'.encode('utf-8')
+        L = []
+        for (key, value) in fields.items():
+            if value is None:
+                value = ""
+            L.append(('--' + BOUNDARY).encode('utf-8'))
+            L.append(('Content-Disposition: form-data; name="%s"' % key).encode('utf-8'))
+            L.append(''.encode('utf-8'))
+            L.append(str(value).encode('utf-8'))
+        for (key, value) in files.items():
+            L.append(('--' + BOUNDARY).encode('utf-8'))
+            L.append(('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, "file.mp3")).encode('utf-8'))
+            L.append(('Content-Type: %s' % "audio/mpeg").encode('utf-8'))
+            L.append(''.encode('utf-8'))
+            L.append(value.read())
+        L.append(('--' + BOUNDARY + '--').encode('utf-8'))
+        L.append(''.encode('utf-8'))
+        body = CRLF.join(L)
+        return body

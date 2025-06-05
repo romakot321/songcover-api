@@ -1,4 +1,5 @@
 from uuid import UUID
+from loguru import logger
 
 from src.core.config import settings
 from src.integration.application.interfaces.result_storage import IResultStorage
@@ -32,13 +33,18 @@ class TopMediaiAdapter:
             raise TypeError(
                 "Empty youtube_url and file provided, no resource for generate"
             )
+        if request.file is not None:
+            request.file.name = "audio.mp3"
+        logger.info(f"Starting task {task_id}")
         response_raw = await self.api_client.request_form_data(
             "/v1/cover",
-            fields=request.model_dump(exclude_none=True, exclude={"file"}),
+            fields=request.model_dump(exclude={"file", "tran"}),
             files={"file": request.file} if request.file else None,
         )
+        logger.debug(f"Response for task {task_id}: {response_raw}")
         response = TopMediaiCoverResponse.model_validate(response_raw)
         self.result_storage.store("topmediai", str(task_id), response)
+        logger.info(f"Task {task_id} finished: {response}")
         return response
 
     def get_ai_cover_result(self, task_id: UUID) -> TopMediaiCoverResponse | None:

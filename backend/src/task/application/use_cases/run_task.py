@@ -1,4 +1,5 @@
 from io import BytesIO
+import asyncio
 from loguru import logger
 
 from uuid import UUID
@@ -45,4 +46,5 @@ class RunTaskUseCase:
             result = await self.runner.get_result(task_id)
             if result is not None:
                 return result
+            await asyncio.sleep(1)
 

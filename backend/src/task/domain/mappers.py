@@ -1,5 +1,6 @@
 from src.integration.domain.dtos import PlayHTResponseDTO, PlayHTStatus
-from backend.src.integration.domain.dtos import TopMediaiResponseDTO
+from src.integration.domain.dtos import TopMediaiResponseDTO
+from src.integration.infrastructure.external_api.topmediai.schemas import TopMediaiCoverResponse
 from src.task.application.interfaces.task_runner import TResponseData
 from src.task.domain.dtos import TaskResultDTO
 from src.task.domain.entities import TaskSource, TaskStatus
@@ -24,16 +25,16 @@ class IntegrationResponseToDomainMapper:
             return self.source
         if hasattr(data, "status") and hasattr(data, "output"):
             return TaskSource.playht
-        elif hasattr(data, "status") and hasattr(data, "combine_file"):
+        elif hasattr(data, "status") and hasattr(data, "data"):
             return TaskSource.topmediai
 
 
 class TopMediaiResponseToDomainMapper:
-    def map_one(self, data: TopMediaiResponseDTO) -> TaskResultDTO:
+    def map_one(self, data: TopMediaiCoverResponse) -> TaskResultDTO:
         status = self._map_status(data.status)
         return TaskResultDTO(
             status=status,
-            result=data.combine_file,
+            result=data.data.combine_file,
             error=data.message if status is TaskStatus.failed else None
         )
 
