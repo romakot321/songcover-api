@@ -1,6 +1,7 @@
 from fastapi import File, Depends, APIRouter, UploadFile
 
 from src.integration.domain.dtos import (
+    GetListParamsDTO,
     TopMediaiSingerDTO,
     PlayHTVoiceCloneReadDTO,
     PlayHTVoiceCloneCreateDTO,
@@ -25,5 +26,5 @@ async def create_voice_clone(
 
 
 @router.get("/topmediai/voice", response_model=list[TopMediaiSingerDTO])
-async def get_voice_list(adapter: TopMediaiAdapterDepend):
-    return await GetVoicesListUseCase(adapter).execute()
+async def get_voice_list(adapter: TopMediaiAdapterDepend, params: GetListParamsDTO = Depends()):
+    return await GetVoicesListUseCase(adapter).execute(params)
