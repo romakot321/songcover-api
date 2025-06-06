@@ -65,17 +65,17 @@ class HTTPApiClient(IHTTPApiClient):
         return response
 
     @staticmethod
-    def encode_multipart_formdata(BOUNDARY, fields, files):
+    def encode_multipart_formdata(BOUNDARY, fields: dict | None, files: dict | None):
         CRLF = '\r\n'.encode('utf-8')
         L = []
-        for (key, value) in fields.items():
+        for (key, value) in (fields or {}).items():
             if value is None:
                 value = ""
             L.append(('--' + BOUNDARY).encode('utf-8'))
             L.append(('Content-Disposition: form-data; name="%s"' % key).encode('utf-8'))
             L.append(''.encode('utf-8'))
             L.append(str(value).encode('utf-8'))
-        for (key, value) in files.items():
+        for (key, value) in (files or {}).items():
             L.append(('--' + BOUNDARY).encode('utf-8'))
             L.append(('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, "file.mp3")).encode('utf-8'))
             L.append(('Content-Type: %s' % "audio/mpeg").encode('utf-8'))

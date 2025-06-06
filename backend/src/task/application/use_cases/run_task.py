@@ -53,5 +53,7 @@ class RunTaskUseCase:
             return "Request error: " + str(e)
         except IntegrationRunException as e:
             return "Generation run error: " + str(e)
+        except Exception as e:
+            return "Internal exception"
         return result
 
