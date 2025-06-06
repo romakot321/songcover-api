@@ -1,4 +1,5 @@
 from typing import Any
+
 from src.integration.application.interfaces.result_storage import IResultStorage
 
 _storage = {}

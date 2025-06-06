@@ -1,4 +1,5 @@
 from io import BytesIO
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -20,3 +21,18 @@ class TopMediaiCoverResponse(BaseModel):
     status: int
     message: str
     data: Data
+
+
+class TopMediaiWebSinger(BaseModel):
+    audition: list[str] | None = None
+    used_num: int
+    route_name: str
+    portrait: str | None = None
+    portrait_webp: str | None = None
+    like_num: int
+    label: list[str]
+    is_hot: int
+    is_favorite: int
+    id: int
+    display_name: str
+    category_id: int

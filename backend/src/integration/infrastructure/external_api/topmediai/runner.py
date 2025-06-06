@@ -1,10 +1,9 @@
-import asyncio
 from uuid import UUID
 
-from src.integration.infrastructure.external_api.topmediai.schemas import TopMediaiCoverRequest, TopMediaiCoverResponse
 from src.task.domain.entities import TaskRun
-from src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
 from src.task.application.interfaces.task_runner import ITaskRunner
+from src.integration.infrastructure.external_api.topmediai.adapter import TopMediaiAdapter
+from src.integration.infrastructure.external_api.topmediai.schemas import TopMediaiCoverRequest, TopMediaiCoverResponse
 
 
 class TopMediaiTaskRunner[TResponseData: TopMediaiCoverResponse](ITaskRunner):

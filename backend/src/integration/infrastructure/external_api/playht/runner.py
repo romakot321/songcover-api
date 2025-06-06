@@ -1,10 +1,9 @@
 from uuid import UUID
 
-from src.integration.domain.dtos import PlayHTResponseDTO
-from src.integration.domain.dtos import PlayHTStatus
-from src.integration.infrastructure.external_api.playht.adapter import PlayHTAdapter
-from src.task.application.interfaces.task_runner import ITaskRunner
 from src.task.domain.entities import TaskRun
+from src.integration.domain.dtos import PlayHTStatus, PlayHTResponseDTO
+from src.task.application.interfaces.task_runner import ITaskRunner
+from src.integration.infrastructure.external_api.playht.adapter import PlayHTAdapter
 
 
 class PlayHTTaskRunner[TResponseData: PlayHTResponseDTO](ITaskRunner):

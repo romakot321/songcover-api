@@ -1,5 +1,11 @@
 from enum import Enum
-from pydantic import BaseModel
+
+from pydantic import Field, BaseModel
+
+
+class GetListParamsDTO(BaseModel):
+    page: int = Field(gt=0, default=1)
+    count: int = 50
 
 
 class PlayHTStatus(str, Enum):
@@ -33,6 +39,8 @@ class PlayHTVoiceCloneReadDTO(BaseModel):
 class TopMediaiSingerDTO(BaseModel):
     singer_name: str
     singer_id: int
+    singer_avatar_preview: str | None = None
+    singer_audio_preview: str | None = None
 
 
 class TopMediaiResponseDTO(BaseModel):

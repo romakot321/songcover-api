@@ -1,11 +1,11 @@
 from io import BytesIO
-from loguru import logger
 from typing import Literal
+
+from src.integration.infrastructure.http.client import HTTPClient
+from src.integration.application.interfaces.http_client import IHTTPClient
 from src.integration.application.interfaces.http_api_client import (
     IHTTPApiClient,
 )
-from src.integration.application.interfaces.http_client import IHTTPClient
-from src.integration.infrastructure.http.client import HTTPClient
 
 
 class HTTPApiClient(IHTTPApiClient):

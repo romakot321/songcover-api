@@ -1,8 +1,7 @@
 import aiohttp
-from loguru import logger
 
-from src.integration.application.interfaces.http_client import IHTTPClient
 from src.integration.domain.exceptions import IntegrationRequestException
+from src.integration.application.interfaces.http_client import IHTTPClient
 
 
 class HTTPClient(IHTTPClient):

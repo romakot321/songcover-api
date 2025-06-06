@@ -1,5 +1,5 @@
-from src.integration.infrastructure.external_api.playht.schemas import PlayHTTTSRequestJobSchema, PlayHTTTSRequestSchema
 from src.task.domain.entities import TaskRun
+from src.integration.infrastructure.external_api.playht.schemas import PlayHTTTSRequestSchema, PlayHTTTSRequestJobSchema
 
 
 class DomainToRequestMapper:

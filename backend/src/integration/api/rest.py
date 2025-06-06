@@ -1,16 +1,15 @@
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import File, Depends, APIRouter, UploadFile
 
-from src.integration.application.use_cases.get_voices_list import GetVoicesListUseCase
-from src.integration.domain.dtos import TopMediaiSingerDTO
+from src.integration.domain.dtos import (
+    TopMediaiSingerDTO,
+    PlayHTVoiceCloneReadDTO,
+    PlayHTVoiceCloneCreateDTO,
+)
 from src.integration.api.dependencies import PlayHTAdapterDepend, TopMediaiAdapterDepend
+from src.integration.application.use_cases.get_voices_list import GetVoicesListUseCase
 from src.integration.application.use_cases.create_voice_clone import (
     CreateVoiceCloneUseCase,
 )
-from src.integration.domain.dtos import (
-    PlayHTVoiceCloneCreateDTO,
-    PlayHTVoiceCloneReadDTO,
-)
-
 
 router = APIRouter()
 

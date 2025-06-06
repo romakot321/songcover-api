@@ -2,10 +2,13 @@ from io import BytesIO
 from uuid import UUID
 
 from pydantic import ValidationError
+
+from src.core.config import settings
+from src.task.domain.entities import TaskRun
+from src.integration.domain.dtos import PlayHTStatus, PlayHTResponseDTO
+from src.integration.domain.exceptions import IntegrationRunException
 from src.integration.application.interfaces.http_client import IHTTPClient
 from src.integration.application.interfaces.result_storage import IResultStorage
-from src.integration.domain.dtos import PlayHTResponseDTO, PlayHTStatus
-from src.integration.domain.exceptions import IntegrationRunException
 from src.integration.infrastructure.external_api.playht.mappers import (
     DomainToRequestMapper,
 )
@@ -13,9 +16,6 @@ from src.integration.infrastructure.external_api.playht.schemas import (
     PlayHTTTSResponseSchema,
     PlayHTVoiceCloneResponseSchema,
 )
-from src.task.domain.entities import TaskRun
-from src.core.config import settings
-
 
 _etasykanerabotaetkaknapisanovdokymentatsiiidinaxyi = """------geckoformboundaryd826725fddca988df034dfc9ef767104
 Content-Disposition: form-data; name="sample_file"; filename="bul_fvo_ralicam_ivr.mp3"
